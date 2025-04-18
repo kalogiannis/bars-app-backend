@@ -16,15 +16,14 @@ const upload = multer({
 
 
 
-router.get("/", jwtCheck, jwtParse, MyBarController.getMyBar);
+router.get("/", MyBarController.getMyBar);
 
 //api/my/bar
 router.post(
   "/",
   upload.single("imageFile"),
   validateMyBarRequest,
-  jwtCheck,      
-  jwtParse,       
+        
   MyBarController.createMyBar
 );
 
@@ -32,8 +31,7 @@ router.put(
   "/",
   upload.single("imageFile"),
   validateMyBarRequest,
-  jwtCheck,
-  jwtParse,
+
   MyBarController.updateMyBar
 );
 
