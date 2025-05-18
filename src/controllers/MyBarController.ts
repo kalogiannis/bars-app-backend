@@ -57,7 +57,7 @@ const createMyBar = async (req: Request, res: Response) => {
     );
 
     const bar = new Bar(req.body);
-    bar.imageUrl = uploadResponse.url; 
+    bar.imageUrl = uploadResponse.url;
     bar.user = new mongoose.Types.ObjectId(req.userId);
     bar.lastUpdated = new Date();
 
@@ -84,6 +84,8 @@ const updateMyBar = async (req: Request, res: Response) => {
     bar.city = req.body.city;
     bar.country = req.body.country;
     bar.openingHours = req.body.openingHours;
+    bar.description = req.body.description;
+    bar.location = req.body.location;
     bar.lastUpdated = new Date();
 
     if (req.file) {
@@ -107,7 +109,6 @@ const uploadImage = async (file: Express.Multer.File) => {
   const uploadResponse = await cloudinary.v2.uploader.upload(dataURI);
   return uploadResponse.url;
 };
-
 
 export default {
   createMyBar,

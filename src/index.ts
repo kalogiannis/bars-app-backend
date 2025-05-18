@@ -6,6 +6,9 @@ import myUserRoute from "./routes/MyUserRoute";
 import { v2 as cloudinary } from "cloudinary";
 
 import myBarRoute from "./routes/MyBarRoute";
+import barRoute from './routes/BarRoute'
+import reservationRoute from './routes/ReservationRoute';
+
 
 mongoose
   .connect(process.env.MONGODB_CONNECTION_STRING as string) 
@@ -26,7 +29,11 @@ app.get("/health", async (req: Request, res: Response) => {
 });
 app.use("/api/my/user", myUserRoute);
 app.use("/api/my/bar", myBarRoute);
-
+app.use("/api/bar", barRoute);
+app.use(
+  '/api/bar/:barId/reservations',
+  reservationRoute
+);
 
 
 app.listen(7000, () => {

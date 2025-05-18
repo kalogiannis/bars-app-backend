@@ -18,8 +18,17 @@ const barSchema= new mongoose.Schema({
         type:String,
         required:true
     },
+     description:{
+        type:String,
+        required:true
+    },
+     location:{
+        type:String,
+        required:true
+    },
     imageUrl: { type: String, required: true },
-    lastUpdated:{type:Date,required:true}
+    lastUpdated:{type:Date,required:true},
+     capacity:    { type: Number, required: true, default: 20 },
 })
 
 const Bar=  mongoose.model('Bar',barSchema)
