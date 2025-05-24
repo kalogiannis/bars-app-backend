@@ -8,6 +8,7 @@ import { v2 as cloudinary } from "cloudinary";
 import myBarRoute from "./routes/MyBarRoute";
 import barRoute from './routes/BarRoute'
 import reservationRoute from './routes/ReservationRoute';
+import myReservationRoute from './routes/MyReservationRoute';
 
 
 mongoose
@@ -34,6 +35,7 @@ app.use(
   '/api/bar/:barId/reservations',
   reservationRoute
 );
+app.use("/api/my/reservations", myReservationRoute);
 
 
 app.listen(7000, () => {

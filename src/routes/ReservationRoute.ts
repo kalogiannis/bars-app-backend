@@ -1,6 +1,6 @@
 
 import express from 'express';
-import { checkAvailability, createReservation } from '../controllers/ReservationController';
+import { cancelReservation, checkAvailability, createReservation } from '../controllers/ReservationController';
 import {
   validateCheckAvailabilityRequest,
   validateCreateReservationRequest
@@ -26,4 +26,13 @@ router.post(
   createReservation
 );
 
+
+
+router.patch(
+  '/:reservationId/cancel',
+  jwtCheck,
+  jwtParse,
+  cancelReservation
+);
 export default router;
+
