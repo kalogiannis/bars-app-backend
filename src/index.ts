@@ -1,3 +1,5 @@
+
+
 import express, { Request, Response } from "express";
 import cors from "cors";
 import "dotenv/config";
@@ -9,6 +11,7 @@ import myBarRoute from "./routes/MyBarRoute";
 import barRoute from './routes/BarRoute'
 import reservationRoute from './routes/ReservationRoute';
 import myReservationRoute from './routes/MyReservationRoute';
+import adminRoute from './routes/AdminRoute';
 
 
 mongoose
@@ -36,6 +39,7 @@ app.use(
   reservationRoute
 );
 app.use("/api/my/reservations", myReservationRoute);
+app.use("/api/admin", adminRoute);
 
 
 app.listen(7000, () => {

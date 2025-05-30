@@ -1,3 +1,5 @@
+
+
 import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema({
@@ -20,6 +22,11 @@ const userSchema = new mongoose.Schema({
   },
   country: {
     type: String,
+  },
+  role: {
+    type: String,
+    enum: ["user", "bar_owner", "admin"],
+    default: "user",
   },
 });
 
