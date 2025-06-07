@@ -109,5 +109,17 @@ export const getBarById = async (req: Request, res: Response) => {
   }
 };
 
+const getAllBars = async (req: Request, res: Response) => {
+  try {
+    const bars = await Bar.find().limit(7);
+    if (!bars.length) {
+      return res.status(404).json({ message: "No bars available" });
+    }
+    res.status(200).json(bars);
+  } catch (error) {
+    console.error('Error fetching bars:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
 
-export default { searchBar, getBarById };
+export default { searchBar, getBarById, getAllBars };

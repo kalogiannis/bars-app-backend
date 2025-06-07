@@ -32,4 +32,7 @@ router.post(
   body("rating").isInt({ min: 1, max: 5 }),
   ReviewController.addReview
 );
+
+router.get('/', BarController.getAllBars);
+
 export default router;
