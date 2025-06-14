@@ -1,7 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import User from "../models/user";
 
-// Middleware to check if the user has admin role
 export const isAdmin = async (
   req: Request,
   res: Response,

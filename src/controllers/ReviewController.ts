@@ -5,11 +5,9 @@ import Review from "../models/review";
 export const getReviews = async (req: Request, res: Response) => {
   const { barId } = req.params;
 
-  // 1️⃣ fetch all reviews…
   const reviews = await Review.find({ bar: barId }).lean();
 
-  // 2️⃣ compute summary statistics
-  const counts = [0,0,0,0,0];  // counts[0]=#1-star, … counts[4]=#5-star
+  const counts = [0,0,0,0,0];  
   let totalRating = 0;
   reviews.forEach(r => {
     counts[r.rating - 1]++;
@@ -22,8 +20,8 @@ export const getReviews = async (req: Request, res: Response) => {
 
   return res.json({
     summary: {
-      average: Number(avgRating.toFixed(1)),   // e.g. 4.6
-      total: totalReviews,                    // e.g. 316
+      average: Number(avgRating.toFixed(1)),   
+      total: totalReviews,                    
       counts: {
         5: counts[4],
         4: counts[3],
@@ -32,7 +30,7 @@ export const getReviews = async (req: Request, res: Response) => {
         1: counts[0],
       },
     },
-    reviews,  // the raw array
+    reviews,  
   });
 };
 

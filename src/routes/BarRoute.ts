@@ -1,5 +1,4 @@
 
-
 import express from "express";
 import { body, param } from "express-validator";
 import BarController from "../controllers/BarController";
@@ -7,7 +6,6 @@ import ReviewController from "../controllers/ReviewController";
 
 const router = express.Router();
 
-// existing routes
 router.get(
   "/search/:city",
   param("city")

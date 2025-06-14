@@ -6,7 +6,6 @@ import { cancelReservation } from "../controllers/ReservationController";
 
 const router = express.Router();
 
-// GET /api/my/reservations
 router.get(
   "/",
   jwtCheck,
@@ -39,7 +38,6 @@ router.patch(
       partySize?: number;
     };
 
-    // very minimal: no availability re-check here
     const updated = await Reservation.findOneAndUpdate(
       { _id: reservationId, user: userId, status: 'confirmed' },
       { ...(date && { date }), ...(time && { time }), ...(partySize && { partySize }) },
@@ -52,7 +50,6 @@ router.patch(
   }
 );
 
-// existing cancel:
 router.patch('/:reservationId/cancel', jwtCheck, jwtParse, cancelReservation);
 
 

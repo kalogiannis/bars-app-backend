@@ -2,3 +2,5 @@
 dist/
 node_modules/
 a.js
+seedAllMenus.js
+seedDrinks.js

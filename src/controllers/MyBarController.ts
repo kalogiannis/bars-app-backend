@@ -1,5 +1,4 @@
 
-
 import { Request, Response } from "express";
 import Bar from "../models/bar";
 import mongoose from "mongoose";

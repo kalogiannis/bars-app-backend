@@ -1,5 +1,4 @@
 
-
 import mongoose from "mongoose";
 
 const barSchema= new mongoose.Schema({
