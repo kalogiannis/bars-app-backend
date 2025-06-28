@@ -29,7 +29,7 @@ const barSchema= new mongoose.Schema({
     },
     imageUrl: { type: String, required: true },
     lastUpdated:{type:Date,required:true},
-     capacity:    { type: Number, required: true, default: 20 },
+    capacity:    { type: Number, required: true, default: 20 },
 })
 
 const Bar=  mongoose.model('Bar',barSchema)
