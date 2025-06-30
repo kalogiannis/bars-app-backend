@@ -1,4 +1,5 @@
 
+
 import express from "express";
 import { body, param } from "express-validator";
 import BarController from "../controllers/BarController";
@@ -15,6 +16,17 @@ router.get(
     .withMessage("City parameter must be a valid string"),
   BarController.searchBar
 );
+
+router.get(
+  "/category/:category",
+  param("category")
+    .isString()
+    .trim()
+    .notEmpty()
+    .withMessage("Category parameter must be a valid string"),
+  BarController.getBarsByCategory
+);
+
 router.get("/:id", BarController.getBarById);
 
 

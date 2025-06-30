@@ -1,4 +1,5 @@
 
+
 import mongoose from "mongoose";
 
 const barSchema= new mongoose.Schema({
@@ -28,6 +29,11 @@ const barSchema= new mongoose.Schema({
         required:true
     },
     imageUrl: { type: String, required: true },
+    category: {
+        type: String,
+        required: true,
+        enum: ['Dive Bar', 'Sports Bar', 'Cocktail Lounge', 'Wine Bar']
+    },
     lastUpdated:{type:Date,required:true},
     capacity:    { type: Number, required: true, default: 20 },
 })

@@ -12,7 +12,6 @@ const searchBar = async (req: Request, res: Response) => {
 
     const query: any = { city: new RegExp(city, "i") };
 
-    // Check for city existence
     const cityCount = await Bar.countDocuments(query);
     if (cityCount === 0) {
       return res.status(404).json({
@@ -119,5 +118,91 @@ const getAllBars = async (req: Request, res: Response) => {
   }
 };
 
-export default { searchBar, getBarById, getAllBars };
+const getBarsByCategory = async (req: Request, res: Response) => {
+  try {
+    const { category } = req.params;
+    const city = req.query.city as string;
+    const sortOption = (req.query.sortOption as string) || "mostReviewed";
+    const page = parseInt(req.query.page as string) || 1;
+    const pageSize = 10;
+    const skip = (page - 1) * pageSize;
+
+    // Validate category
+    const validCategories = ['Dive Bar', 'Sports Bar', 'Cocktail Lounge', 'Wine Bar'];
+    if (!validCategories.includes(category)) {
+      return res.status(400).json({ message: "Invalid category" });
+    }
+
+    const query: any = { category: category };
+
+    // Add city filter if provided
+    if (city) {
+      query.city = new RegExp(city, "i");
+    }
+
+    let aggregationPipeline: any[] = [
+      { $match: query },
+      {
+        $lookup: {
+          from: Review.collection.name,
+          localField: "_id",
+          foreignField: "bar",
+          as: "reviews",
+        },
+      },
+      {
+        $addFields: {
+          averageRating: { $avg: "$reviews.rating" },
+          totalReviews: { $size: "$reviews" },
+        },
+      },
+    ];
+
+    // Add sorting
+    switch (sortOption) {
+      case "rating":
+        aggregationPipeline.push({ $sort: { averageRating: -1 } }); 
+        break;
+      case "capacity":
+        aggregationPipeline.push({ $sort: { capacity: -1 } }); 
+        break;
+      case "mostReviewed":
+        aggregationPipeline.push({ $sort: { totalReviews: -1 } }); 
+        break;
+      default:
+        aggregationPipeline.push({ $sort: { name: 1 } }); 
+    }
+
+    // Add pagination and projection
+    aggregationPipeline.push(
+      { $skip: skip },
+      { $limit: pageSize },
+      {
+        $project: {
+          reviews: 0,
+          __v: 0,
+        },
+      }
+    );
+
+    const [bars, total] = await Promise.all([
+      Bar.aggregate(aggregationPipeline),
+      Bar.countDocuments(query)
+    ]);
+
+    res.json({
+      data: bars,
+      pagination: {
+        total,
+        page,
+        pages: Math.ceil(total / pageSize),
+      },
+    });
+  } catch (error) {
+    console.error('Error fetching bars by category:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+export default { searchBar, getBarById, getAllBars, getBarsByCategory };
 

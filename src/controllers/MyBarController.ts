@@ -87,6 +87,7 @@ const updateMyBar = async (req: Request, res: Response) => {
     bar.openingHours = req.body.openingHours;
     bar.description = req.body.description;
     bar.location = req.body.location;
+    bar.category = req.body.category;
     bar.lastUpdated = new Date();
 
     if (req.file) {
