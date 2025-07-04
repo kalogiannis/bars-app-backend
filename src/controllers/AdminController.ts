@@ -1,7 +1,88 @@
+
 import { Request, Response } from "express";
 import User from "../models/user";
 import Bar from "../models/bar";
 import mongoose from "mongoose";
+
+// Get dashboard statistics
+const getDashboardStats = async (req: Request, res: Response) => {
+  try {
+    const now = new Date();
+    const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+    const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+
+    // Get total counts
+    const [totalBars, totalBarOwners, totalUsers] = await Promise.all([
+      Bar.countDocuments(),
+      User.countDocuments({ role: "bar_owner" }),
+      User.countDocuments({ role: { $ne: "admin" } }) // All users except admins
+    ]);
+
+    // Get new registrations in last 7 days
+    const [newBarsLast7Days, newBarOwnersLast7Days, newUsersLast7Days] = await Promise.all([
+      Bar.countDocuments({ lastUpdated: { $gte: sevenDaysAgo } }),
+      User.countDocuments({ 
+        role: "bar_owner",
+        createdAt: { $gte: sevenDaysAgo }
+      }),
+      User.countDocuments({ 
+        role: { $ne: "admin" },
+        createdAt: { $gte: sevenDaysAgo }
+      })
+    ]);
+
+    // Get new registrations in last 30 days
+    const [newBarsLast30Days, newBarOwnersLast30Days, newUsersLast30Days] = await Promise.all([
+      Bar.countDocuments({ lastUpdated: { $gte: thirtyDaysAgo } }),
+      User.countDocuments({ 
+        role: "bar_owner",
+        createdAt: { $gte: thirtyDaysAgo }
+      }),
+      User.countDocuments({ 
+        role: { $ne: "admin" },
+        createdAt: { $gte: thirtyDaysAgo }
+      })
+    ]);
+
+    // Get active bars/owners (updated in last 30 days)
+    const [activeBars, activeBarOwners] = await Promise.all([
+      Bar.countDocuments({ lastUpdated: { $gte: thirtyDaysAgo } }),
+      User.countDocuments({ 
+        role: "bar_owner",
+        updatedAt: { $gte: thirtyDaysAgo }
+      })
+    ]);
+
+    const stats = {
+      totals: {
+        bars: totalBars,
+        barOwners: totalBarOwners,
+        users: totalUsers
+      },
+      recent: {
+        last7Days: {
+          bars: newBarsLast7Days,
+          barOwners: newBarOwnersLast7Days,
+          users: newUsersLast7Days
+        },
+        last30Days: {
+          bars: newBarsLast30Days,
+          barOwners: newBarOwnersLast30Days,
+          users: newUsersLast30Days
+        }
+      },
+      active: {
+        bars: activeBars,
+        barOwners: activeBarOwners
+      }
+    };
+
+    res.json(stats);
+  } catch (error) {
+    console.error("Error fetching dashboard stats:", error);
+    res.status(500).json({ message: "Error fetching dashboard statistics" });
+  }
+};
 
 // Get all bar owners
 const getAllBarOwners = async (req: Request, res: Response) => {
@@ -148,6 +229,7 @@ const getBarOwnerBars = async (req: Request, res: Response) => {
 };
 
 export default {
+  getDashboardStats,
   getAllBarOwners,
   getBarOwnerById,
   createBarOwner,

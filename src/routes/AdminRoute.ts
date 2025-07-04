@@ -1,3 +1,4 @@
+
 import express from "express";
 import { jwtCheck, jwtParse } from "../middleware/auth";
 import { isAdmin } from "../middleware/adminAuth";
@@ -9,6 +10,9 @@ const router = express.Router();
 router.use(jwtCheck);
 router.use(jwtParse);
 router.use(isAdmin);
+
+// Dashboard statistics route
+router.get("/dashboard/stats", AdminController.getDashboardStats);
 
 // Bar owner management routes
 router.get("/bar-owners", AdminController.getAllBarOwners);
