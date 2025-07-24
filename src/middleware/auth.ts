@@ -1,5 +1,4 @@
 
-
 import { auth } from "express-oauth2-jwt-bearer";
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
@@ -50,4 +49,15 @@ export const jwtParse = async (
   } catch (error) {
     return res.sendStatus(401);
   }
+};
+
+export const authorizeRoles = (roles: string[]) => {
+  return (req: Request, res: Response, next: NextFunction) => {
+    const userRole = req.auth0Id ? "admin" : "user"; 
+
+    if (!roles.includes(userRole)) {
+      return res.status(403).send({ message: "Forbidden" });
+    }
+    next();
+  };
 };

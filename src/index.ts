@@ -10,9 +10,10 @@ import myBarRoute from "./routes/MyBarRoute";
 import barRoute from './routes/BarRoute'
 import reservationRoute from './routes/ReservationRoute';
 import myReservationRoute from './routes/MyReservationRoute';
-import adminRoute from './routes/AdminRoute';
+
 import drinkMenuRoute from './routes/drinkMenu';
 import favoriteRoute from "./routes/favorites";
+import AdminUserRoute from "./routes/AdminUserRoute";
 
 mongoose
   .connect(process.env.MONGODB_CONNECTION_STRING as string) 
@@ -39,10 +40,14 @@ app.use(
   reservationRoute
 );
 app.use("/api/my/reservations", myReservationRoute);
-app.use("/api/admin", adminRoute);
+
 app.use("/api/drink-menu", drinkMenuRoute);
 app.use("/api/favorites", favoriteRoute);
+app.use("/api/admin/users", AdminUserRoute);
 
 app.listen(7000, () => {
     console.log("server started on localhost:7000");
 });
+
+
+
