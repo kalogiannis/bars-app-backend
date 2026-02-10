@@ -14,6 +14,7 @@ import myReservationRoute from './routes/MyReservationRoute';
 import drinkMenuRoute from './routes/drinkMenu';
 import favoriteRoute from "./routes/favorites";
 import AdminUserRoute from "./routes/AdminUserRoute";
+import AdminRoute from "./routes/AdminRoute";
 
 mongoose
   .connect(process.env.MONGODB_CONNECTION_STRING as string) 
@@ -44,10 +45,8 @@ app.use("/api/my/reservations", myReservationRoute);
 app.use("/api/drink-menu", drinkMenuRoute);
 app.use("/api/favorites", favoriteRoute);
 app.use("/api/admin/users", AdminUserRoute);
+app.use("/api/admin", AdminRoute);
 
 app.listen(7000, () => {
     console.log("server started on localhost:7000");
 });
-
-
-

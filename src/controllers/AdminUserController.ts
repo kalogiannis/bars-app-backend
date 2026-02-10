@@ -1,4 +1,5 @@
 
+
 import { Request, Response } from "express";
 import User from "../models/user";
 import mongoose from "mongoose";
@@ -125,4 +126,3 @@ export default {
   getAllUsers,
   deleteAdminUser
 };
-
