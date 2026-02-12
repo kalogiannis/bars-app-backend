@@ -42,6 +42,8 @@ router.post("/users", AdminController.createUser);
 router.post("/bar-owners", AdminController.createBarOwner);
 router.put("/bar-owners/:id", AdminController.updateBarOwner);
 router.post("/bar-owners/:id/bars", upload.single("imageFile"), validateBarRequest, AdminController.createBarOwnerBar);
+router.put("/bars/:barId", upload.single("imageFile"), validateBarRequest, AdminController.updateBar);
+router.delete("/bars/:barId", AdminController.deleteBar);
 
 
 export default router;

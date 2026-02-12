@@ -1,5 +1,4 @@
 
-
 import { Request, Response } from "express";
 import User from "../models/user";
 import Bar from "../models/bar";
@@ -403,6 +402,57 @@ const createBarOwnerBar = async (req: Request, res: Response) => {
   }
 };
 
+const deleteBar = async (req: Request, res: Response) => {
+  try {
+    const barId = req.params.barId;
+    const bar = await Bar.findById(barId);
+
+    if (!bar) {
+      return res.status(404).json({ message: "Bar not found" });
+    }
+
+    await Bar.deleteOne({ _id: barId });
+    res.status(200).json({ message: "Bar deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting bar:", error);
+    res.status(500).json({ message: "Error deleting bar" });
+  }
+};
+
+const updateBar = async (req: Request, res: Response) => {
+  try {
+    const barId = req.params.barId;
+    const bar = await Bar.findById(barId);
+
+    if (!bar) {
+      return res.status(404).json({ message: "Bar not found" });
+    }
+
+    bar.name = req.body.name;
+    bar.city = req.body.city;
+    bar.country = req.body.country;
+    bar.openingHours = req.body.openingHours;
+    bar.description = req.body.description;
+    bar.location = req.body.location;
+    bar.category = req.body.category;
+    bar.lastUpdated = new Date();
+
+    if (req.file) {
+      const image = req.file as Express.Multer.File;
+      const base64Image = image.buffer.toString("base64");
+      const dataURI = `data:${image.mimetype};base64,${base64Image}`;
+      const uploadResponse = await cloudinary.v2.uploader.upload(dataURI);
+      bar.imageUrl = uploadResponse.url;
+    }
+
+    await bar.save();
+    res.status(200).send(bar);
+  } catch (error) {
+    console.error("Error updating bar:", error);
+    res.status(500).json({ message: "Something went wrong" });
+  }
+};
+
 export default {
   getDashboardStats,
   getAllBarOwners,
@@ -410,6 +460,8 @@ export default {
   createBarOwner,
   updateBarOwner,
   createBarOwnerBar,
+  updateBar,
+  deleteBar,
   deleteBarOwner,
   getBarOwnerBars,
   getAllUsers,
