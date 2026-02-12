@@ -1,9 +1,11 @@
-
-
 import express from "express";
 import { jwtCheck, jwtParse } from "../middleware/auth";
 import { isAdmin } from "../middleware/adminAuth";
+import { validateBarRequest } from "../middleware/validation";
 import AdminController from "../controllers/AdminController";
+import multer from "multer";
+
+const upload = multer({ storage: multer.memoryStorage() });
 
 const router = express.Router();
 
@@ -39,6 +41,7 @@ router.post("/users", AdminController.createUser);
 
 router.post("/bar-owners", AdminController.createBarOwner);
 router.put("/bar-owners/:id", AdminController.updateBarOwner);
+router.post("/bar-owners/:id/bars", upload.single("imageFile"), validateBarRequest, AdminController.createBarOwnerBar);
 
 
 export default router;
