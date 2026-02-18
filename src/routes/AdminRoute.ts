@@ -1,7 +1,7 @@
 import express from "express";
 import { jwtCheck, jwtParse } from "../middleware/auth";
 import { isAdmin } from "../middleware/adminAuth";
-import { validateBarRequest } from "../middleware/validation";
+import { validateBarRequest, validateDrinkItemRequest } from "../middleware/validation";
 import AdminController from "../controllers/AdminController";
 import multer from "multer";
 
@@ -44,6 +44,9 @@ router.put("/bar-owners/:id", AdminController.updateBarOwner);
 router.post("/bar-owners/:id/bars", upload.single("imageFile"), validateBarRequest, AdminController.createBarOwnerBar);
 router.put("/bars/:barId", upload.single("imageFile"), validateBarRequest, AdminController.updateBar);
 router.delete("/bars/:barId", AdminController.deleteBar);
+router.post("/bars/drink-menu", validateDrinkItemRequest, AdminController.addDrinkItem);
+router.put("/bars/drink-menu/:drinkId", validateDrinkItemRequest, AdminController.updateDrinkItem);
+router.delete("/bars/drink-menu/:drinkId", AdminController.deleteDrinkItem);
 
 
 export default router;

@@ -1,4 +1,3 @@
-
 import { body, param, query, validationResult } from "express-validator";
 import { Request, Response, NextFunction } from "express";
 
@@ -34,6 +33,14 @@ export const validateBarRequest = [
   body('country').isString().notEmpty().withMessage('Country must be a string'),
   body('openingHours').isString().notEmpty().withMessage('Opening hours must be a string'),
   handleValidationErrors
+];
+
+export const validateDrinkItemRequest = [
+  body("name").isString().notEmpty().withMessage("Name is required"),
+  body("description").isString().notEmpty().withMessage("Description is required"),
+  body("price").isFloat({ min: 0 }).withMessage("Price must be a positive number"),
+  body("category").isString().notEmpty().withMessage("Category is required"),
+  handleValidationErrors,
 ];
 
 

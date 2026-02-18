@@ -1,11 +1,10 @@
-
 import { Request, Response } from "express";
 import User from "../models/user";
 import Bar from "../models/bar";
+import DrinkItem from "../models/drinkItem";
 import mongoose from "mongoose";
 import cloudinary from "cloudinary";
 
-// Get dashboard statistics
 const getDashboardStats = async (req: Request, res: Response) => {
   try {
     const now = new Date();
@@ -453,6 +452,61 @@ const updateBar = async (req: Request, res: Response) => {
   }
 };
 
+const addDrinkItem = async (req: Request, res: Response) => {
+  try {
+    const { barId } = req.body;
+    const bar = await Bar.findById(barId);
+    if (!bar) {
+      return res.status(404).json({ message: "Bar not found" });
+    }
+
+    const drinkItem = new DrinkItem({
+      ...req.body,
+      bar: barId,
+    });
+
+    await drinkItem.save();
+    res.status(201).json(drinkItem);
+  } catch (error: any) {
+    console.error("Error adding drink item:", error);
+    if (error.code === 11000) {
+      return res.status(400).json({ message: "A drink with this name already exists for this bar" });
+    }
+    res.status(500).json({ message: "Error adding drink item" });
+  }
+};
+
+const updateDrinkItem = async (req: Request, res: Response) => {
+  try {
+    const { drinkId } = req.params;
+    const drinkItem = await DrinkItem.findById(drinkId);
+    if (!drinkItem) {
+      return res.status(404).json({ message: "Drink item not found" });
+    }
+
+    Object.assign(drinkItem, req.body);
+    await drinkItem.save();
+    res.status(200).json(drinkItem);
+  } catch (error) {
+    console.error("Error updating drink item:", error);
+    res.status(500).json({ message: "Error updating drink item" });
+  }
+};
+
+const deleteDrinkItem = async (req: Request, res: Response) => {
+  try {
+    const { drinkId } = req.params;
+    const drinkItem = await DrinkItem.findByIdAndDelete(drinkId);
+    if (!drinkItem) {
+      return res.status(404).json({ message: "Drink item not found" });
+    }
+    res.status(200).json({ message: "Drink item deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting drink item:", error);
+    res.status(500).json({ message: "Error deleting drink item" });
+  }
+};
+
 export default {
   getDashboardStats,
   getAllBarOwners,
@@ -463,6 +517,9 @@ export default {
   updateBar,
   deleteBar,
   deleteBarOwner,
+  addDrinkItem,
+  updateDrinkItem,
+  deleteDrinkItem,
   getBarOwnerBars,
   getAllUsers,
   deleteUser,
